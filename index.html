@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101014" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="The ten best-rated videos on any topic, with ratings and where to stream.">
+<title>Top Ten</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --panel: #f5f5f7;
+    --line: #e2e2e7;
+    --ink: #16161a;
+    --dim: #6b6b76;
+    --accent: #2c5fd8;
+    --accent-ink: #ffffff;
+    --bad: #b3261e;
+    --warn-bg: #fff6e5;
+    --warn-line: #f0d9a8;
+    --warn-ink: #6b4c07;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #101014;
+      --panel: #1a1a20;
+      --line: #2c2c35;
+      --ink: #f2f2f5;
+      --dim: #9b9baa;
+      --accent: #7aa2ff;
+      --accent-ink: #10121a;
+      --bad: #ff8a80;
+      --warn-bg: #2a2415;
+      --warn-line: #4a3f1e;
+      --warn-ink: #f0d9a8;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    padding:
+      env(safe-area-inset-top) env(safe-area-inset-right)
+      env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  .wrap {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  header { margin-bottom: 1.25rem; }
+
+  h1 {
+    font-size: 1.6rem;
+    line-height: 1.2;
+    margin: 0 0 .25rem;
+    letter-spacing: -0.02em;
+  }
+
+  .sub {
+    margin: 0;
+    color: var(--dim);
+    font-size: .9rem;
+  }
+
+  form {
+    display: flex;
+    gap: .5rem;
+    margin: 1.25rem 0 0;
+  }
+
+  /* 16px minimum stops iOS Safari zooming the page on focus. */
+  #topic {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 16px;
+    font-family: inherit;
+    color: var(--ink);
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: .7rem;
+    padding: .8rem .9rem;
+    min-height: 2.9rem;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  #topic:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  #topic::placeholder { color: var(--dim); }
+
+  button {
+    flex: 0 0 auto;
+    font-size: 16px;
+    font-family: inherit;
+    font-weight: 600;
+    color: var(--accent-ink);
+    background: var(--accent);
+    border: 0;
+    border-radius: .7rem;
+    padding: .8rem 1.15rem;
+    min-height: 2.9rem;  /* comfortable iOS touch target */
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  button:disabled { opacity: .55; cursor: default; }
+
+  .status {
+    margin: 1.25rem 0 0;
+    color: var(--dim);
+    font-size: .93rem;
+  }
+  .status.error { color: var(--bad); }
+
+  .notice {
+    margin: 1.25rem 0 0;
+    padding: .7rem .85rem;
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-line);
+    border-radius: .6rem;
+    color: var(--warn-ink);
+    font-size: .88rem;
+  }
+
+  ol {
+    list-style: none;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: .7rem;
+  }
+
+  li {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: .8rem;
+    padding: .85rem .95rem;
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: 0 .6rem;
+  }
+
+  .rank {
+    grid-row: 1 / span 3;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--dim);
+    padding-top: .1rem;
+  }
+
+  .title {
+    margin: 0;
+    font-size: 1.02rem;
+    font-weight: 650;
+    line-height: 1.35;
+  }
+  .title .meta {
+    font-weight: 400;
+    color: var(--dim);
+    font-size: .88rem;
+    white-space: nowrap;
+  }
+
+  .why {
+    margin: .3rem 0 0;
+    font-size: .93rem;
+  }
+
+  .facts {
+    margin: .45rem 0 0;
+    font-size: .87rem;
+    color: var(--dim);
+    display: grid;
+    gap: .15rem;
+  }
+  .facts b {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  footer {
+    margin-top: 2.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+    color: var(--dim);
+    font-size: .8rem;
+  }
+
+  @media (max-width: 26rem) {
+    form { flex-wrap: wrap; }
+    button { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Top Ten</h1>
+    <p class="sub">The ten best-rated videos on any topic, with ratings and where to watch.</p>
+  </header>
+
+  <form id="form" novalidate>
+    <input id="topic" name="topic" type="search"
+           placeholder="deep sea, chess, the Roman empire&hellip;"
+           enterkeyhint="search" autocomplete="off" autocorrect="off"
+           autocapitalize="none" spellcheck="false" maxlength="200"
+           aria-label="Topic">
+    <button id="go" type="submit">Search</button>
+  </form>
+
+  <p id="status" class="status" role="status" aria-live="polite"></p>
+  <p id="notice" class="notice" hidden></p>
+  <ol id="results" aria-label="Results"></ol>
+
+  <footer>
+    No accounts, no cookies, nothing stored. Your topic goes to the Anthropic
+    API and the answer comes straight back.
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------------------------------------------------------------------
+  // Point this at your deployed Cloudflare Worker.
+  // ---------------------------------------------------------------------
+  var API_ENDPOINT = "https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev";
+
+  var REQUEST_TIMEOUT_MS = 180000; // web search + ranking is not fast
+
+  // --- parser:start -----------------------------------------------------
+  // Turns whatever the model sent back into an array of clean records.
+  //
+  // The model is asked for a bare JSON array of objects with keys
+  // t, y, k, w, s, p. In practice it may also wrap the array in a markdown
+  // fence, add a sentence of preamble, or get cut off mid-object when the
+  // response hits max_tokens. All of those have to degrade to "return the
+  // records that did arrive" rather than throwing away the whole answer.
+
+  function parseResults(raw) {
+    if (typeof raw !== "string" || !raw) return [];
+
+    var text = stripFences(raw);
+
+    // Fast path: the whole thing is valid JSON.
+    var whole = tryParse(text);
+    var direct = asRecordArray(whole);
+    if (direct) return normaliseAll(direct);
+
+    // Otherwise walk the text and pick out every complete top-level object.
+    // An object left unterminated by truncation never closes, so it is
+    // dropped and everything before it survives.
+    return normaliseAll(scanObjects(text));
+  }
+
+  function stripFences(text) {
+    // ```json ... ``` , ``` ... ``` , or a stray unclosed opening fence.
+    return text
+      .replace(/^﻿/, "")
+      .replace(/```[a-zA-Z0-9_-]*\s*/g, "")
+      .replace(/```/g, "")
+      .trim();
+  }
+
+  function tryParse(text) {
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Accepts a bare array, or a wrapper object with the array under a
+  // plausible key, which the model occasionally produces.
+  function asRecordArray(value) {
+    if (Array.isArray(value)) return value;
+    if (value && typeof value === "object") {
+      var keys = ["items", "results", "videos", "list", "data", "top"];
+      for (var i = 0; i < keys.length; i++) {
+        if (Array.isArray(value[keys[i]])) return value[keys[i]];
+      }
+    }
+    return null;
+  }
+
+  // String-aware brace matcher. Depth is only counted outside of strings, so
+  // a brace or a quote inside a title cannot desynchronise it.
+  function scanObjects(text) {
+    var out = [];
+    var depth = 0;
+    var start = -1;
+    var inString = false;
+    var escaped = false;
+
+    for (var i = 0; i < text.length; i++) {
+      var ch = text.charAt(i);
+
+      if (inString) {
+        if (escaped) escaped = false;
+        else if (ch === "\\") escaped = true;
+        else if (ch === '"') inString = false;
+        continue;
+      }
+
+      if (ch === '"') {
+        inString = true;
+      } else if (ch === "{") {
+        if (depth === 0) start = i;
+        depth++;
+      } else if (ch === "}") {
+        if (depth > 0) {
+          depth--;
+          if (depth === 0 && start !== -1) {
+            var obj = tryParse(text.slice(start, i + 1));
+            if (obj && typeof obj === "object" && !Array.isArray(obj)) {
+              out.push(obj);
+            }
+            start = -1;
+          }
+        }
+      }
+    }
+
+    return out;
+  }
+
+  function normaliseAll(rows) {
+    var out = [];
+    for (var i = 0; i < rows.length; i++) {
+      var rec = normalise(rows[i]);
+      if (rec) out.push(rec);
+    }
+    return out;
+  }
+
+  // A record is only useful if it has a title. Everything else is optional
+  // and may be missing from a partially-formed object.
+  function normalise(row) {
+    if (!row || typeof row !== "object" || Array.isArray(row)) return null;
+
+    var title = str(row.t);
+    if (!title) return null;
+
+    return {
+      t: title,
+      y: year(row.y),
+      k: str(row.k),
+      w: str(row.w),
+      s: str(row.s),
+      p: str(row.p)
+    };
+  }
+
+  // Coerces whatever arrived into a trimmed display string. Arrays are
+  // joined because "where to watch" is sometimes sent as a list.
+  function str(value) {
+    if (value === null || value === undefined) return "";
+    if (typeof value === "string") return value.trim();
+    if (typeof value === "number" || typeof value === "boolean") {
+      return String(value);
+    }
+    if (Array.isArray(value)) {
+      var parts = [];
+      for (var i = 0; i < value.length; i++) {
+        var part = str(value[i]);
+        if (part) parts.push(part);
+      }
+      return parts.join(", ");
+    }
+    return "";
+  }
+
+  function year(value) {
+    var text = str(value);
+    var match = text.match(/\d{4}/);
+    return match ? match[0] : "";
+  }
+  // --- parser:end -------------------------------------------------------
+
+  // ---------------------------------------------------------------------
+  // UI
+  // ---------------------------------------------------------------------
+
+  var form = document.getElementById("form");
+  var input = document.getElementById("topic");
+  var button = document.getElementById("go");
+  var statusEl = document.getElementById("status");
+  var noticeEl = document.getElementById("notice");
+  var resultsEl = document.getElementById("results");
+
+  var inFlight = null;
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    var topic = input.value.trim();
+    if (!topic) {
+      input.focus();
+      return;
+    }
+    search(topic);
+  });
+
+  function search(topic) {
+    if (inFlight) inFlight.abort();
+
+    if (API_ENDPOINT.indexOf("YOUR-WORKER") !== -1) {
+      setStatus("Set API_ENDPOINT in index.html to your Worker URL.", true);
+      return;
+    }
+
+    resultsEl.textContent = "";
+    noticeEl.hidden = true;
+    setStatus("Searching for the best-rated videos on " + topic + "…", false);
+    button.disabled = true;
+
+    var controller = new AbortController();
+    inFlight = controller;
+    var timer = setTimeout(function () { controller.abort(); }, REQUEST_TIMEOUT_MS);
+
+    fetch(API_ENDPOINT, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ topic: topic }),
+      signal: controller.signal
+    })
+      .then(function (res) {
+        return res.json().then(function (body) {
+          if (!res.ok) {
+            throw new Error(body && body.error ? body.error : "Request failed.");
+          }
+          return body;
+        }, function () {
+          throw new Error("Server sent a malformed reply.");
+        });
+      })
+      .then(function (body) {
+        var rows = parseResults(body && body.text);
+        if (!rows.length) {
+          setStatus("No results came back. Try rewording the topic.", true);
+          return;
+        }
+        render(rows);
+        setStatus(
+          "Showing " + rows.length + (rows.length === 1 ? " result" : " results")
+            + " for " + topic + ".",
+          false
+        );
+        if (body && body.truncated) {
+          showNotice(
+            "The answer was cut off before the full ten, so this list is short. "
+            + "Everything shown above is complete."
+          );
+        } else if (rows.length < 10) {
+          showNotice("Only " + rows.length + " of the ten came back cleanly.");
+        }
+      })
+      .catch(function (err) {
+        if (err && err.name === "AbortError") {
+          if (controller === inFlight) {
+            setStatus("That took too long. Try a narrower topic.", true);
+          }
+          return;
+        }
+        setStatus(err && err.message ? err.message : "Something went wrong.", true);
+      })
+      .then(function () {
+        clearTimeout(timer);
+        if (controller === inFlight) {
+          inFlight = null;
+          button.disabled = false;
+        }
+      });
+  }
+
+  // Everything here is built with textContent. The strings come from a model
+  // reading the open web, so they are never trusted as markup.
+  function render(rows) {
+    var list = document.createDocumentFragment();
+
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      var li = document.createElement("li");
+
+      var rank = document.createElement("div");
+      rank.className = "rank";
+      rank.textContent = String(i + 1);
+      li.appendChild(rank);
+
+      var title = document.createElement("p");
+      title.className = "title";
+      title.textContent = row.t;
+
+      var bits = [];
+      if (row.y) bits.push(row.y);
+      if (row.k) bits.push(row.k);
+      if (bits.length) {
+        var meta = document.createElement("span");
+        meta.className = "meta";
+        meta.textContent = "  " + bits.join(" · ");
+        title.appendChild(meta);
+      }
+      li.appendChild(title);
+
+      if (row.p) {
+        var why = document.createElement("p");
+        why.className = "why";
+        why.textContent = row.p;
+        li.appendChild(why);
+      }
+
+      var facts = document.createElement("div");
+      facts.className = "facts";
+      if (row.s) facts.appendChild(fact("Rated", row.s));
+      if (row.w) facts.appendChild(fact("Watch on", row.w));
+      if (facts.childNodes.length) li.appendChild(facts);
+
+      list.appendChild(li);
+    }
+
+    resultsEl.textContent = "";
+    resultsEl.appendChild(list);
+  }
+
+  function fact(label, value) {
+    var line = document.createElement("div");
+    var b = document.createElement("b");
+    b.textContent = label + ": ";
+    line.appendChild(b);
+    line.appendChild(document.createTextNode(value));
+    return line;
+  }
+
+  function setStatus(message, isError) {
+    statusEl.textContent = message;
+    statusEl.className = isError ? "status error" : "status";
+  }
+
+  function showNotice(message) {
+    noticeEl.textContent = message;
+    noticeEl.hidden = false;
+  }
+
+  // Exposed so the test harness can exercise the parser directly.
+  if (typeof module === "object" && module.exports) {
+    module.exports = { parseResults: parseResults };
+  }
+})();
+</script>
+</body>
+</html>
