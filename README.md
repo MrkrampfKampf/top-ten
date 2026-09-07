@@ -24,7 +24,17 @@ index.html  →  worker.js  →  Anthropic API (Claude + web_search)
 
 ## Setup
 
-### 1. Deploy the Worker
+### 1. Get an Anthropic API key
+
+Sign in at <https://platform.claude.com>, then Settings → API keys → Create
+key. Copy it there and then; the console will not show it again.
+
+The API is billed separately from a Claude.ai subscription, so add credit
+under Billing or the first call comes back `400 credit balance is too low`.
+A key with no credit still authenticates, which makes this easy to misread
+as a broken Worker.
+
+### 2. Deploy the Worker
 
 Set your Pages origin in `worker.js`:
 
@@ -45,7 +55,7 @@ wrangler deploy
 The key is only ever read from `env.ANTHROPIC_API_KEY`. Never put it in a
 file in this repo.
 
-### 2. Point the page at the Worker
+### 3. Point the page at the Worker
 
 In `index.html`:
 
@@ -53,7 +63,7 @@ In `index.html`:
 var API_ENDPOINT = "https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev";
 ```
 
-### 3. Turn on GitHub Pages
+### 4. Turn on GitHub Pages
 
 Settings → Pages → Source: *Deploy from a branch* → `main` / `/ (root)` → Save.
 
